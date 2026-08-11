@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: quickbite-analytics
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt && cd frontend && npm install && npm run build
+    startCommand: DEV=0 HOST=0.0.0.0 python scripts/start.py
+    envVars:
+      - key: LLM_PROVIDER
+        value: groq
+      - key: GROQ_API_KEY
+        sync: false
+      - key: GROQ_MODEL
+        value: llama-3.3-70b-versatile
+      - key: DATABASE_URL
+        sync: false
+      - key: DEV
+        value: "0"
+      - key: HOST
+        value: 0.0.0.0
+      - key: PYTHON_VERSION
+        value: "3.11.9"
