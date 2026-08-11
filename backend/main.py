@@ -6,7 +6,7 @@ from pathlib import Path
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, Response
 from fastapi.staticfiles import StaticFiles
 
 from backend.data.env_loader import load_project_env
@@ -74,6 +74,16 @@ def root():
         "db_backend": get_db_backend(),
         "database_ready": database_ready(),
     }
+
+
+@app.head("/")
+def root_head():
+    return Response(status_code=200)
+
+
+@app.head("/health")
+def health_head():
+    return Response(status_code=200)
 
 
 @app.get("/health")

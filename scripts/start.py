@@ -22,7 +22,6 @@ def main() -> int:
 
     get_settings.cache_clear()
     print(f"Project root: {PROJECT_ROOT}")
-    print(f".env loaded from: {PROJECT_ROOT / '.env'}")
 
     settings = get_settings()
     print(f"LLM provider: {settings.llm_provider}")
@@ -35,9 +34,11 @@ def main() -> int:
     except Exception as exc:
         print(f"Database bootstrap warning: {exc}")
 
+    # Render/cloud always sets PORT — bind to 0.0.0.0 so the port is reachable externally
+    on_cloud = "PORT" in os.environ
     port = os.environ.get("PORT", "8000")
-    host = os.environ.get("HOST", "127.0.0.1")
-    reload = os.environ.get("DEV", "1") == "1"
+    host = os.environ.get("HOST", "0.0.0.0" if on_cloud else "127.0.0.1")
+    reload = os.environ.get("DEV", "0" if on_cloud else "1") == "1"
 
     cmd = [
         sys.executable,
@@ -52,8 +53,7 @@ def main() -> int:
     if reload:
         cmd.append("--reload")
 
-    print(f"Starting backend at http://{host}:{port}")
-    print("Press Ctrl+C to stop.")
+    print(f"Starting backend at http://{host}:{port} (reload={reload})")
     return subprocess.call(cmd)
 
 
