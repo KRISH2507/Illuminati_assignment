@@ -3,7 +3,7 @@ services:
     name: quickbite-analytics
     runtime: python
     plan: free
-    buildCommand: pip install -r requirements.txt && cd frontend && npm install && npm run build
+    buildCommand: pip install -r requirements.txt && cd frontend && VITE_BASE=/app/ npm install && npm run build
     startCommand: DEV=0 HOST=0.0.0.0 python scripts/start.py
     envVars:
       - key: LLM_PROVIDER

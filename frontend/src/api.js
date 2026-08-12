@@ -1,4 +1,4 @@
-const API_BASE = import.meta.env.VITE_API_URL || "";
+const API_BASE = (import.meta.env.VITE_API_URL || "").replace(/\/$/, "");
 
 async function request(path, options = {}) {
   let response;
@@ -11,9 +11,10 @@ async function request(path, options = {}) {
       ...options,
     });
   } catch {
-    throw new Error(
-      "Cannot reach backend at port 8000. Start it first: python scripts/start.py"
-    );
+    const hint = API_BASE
+      ? `Cannot reach backend at ${API_BASE}`
+      : "Cannot reach backend at http://127.0.0.1:8000. Start it: python scripts/start.py";
+    throw new Error(hint);
   }
 
   const payload = await response.json().catch(() => ({}));
